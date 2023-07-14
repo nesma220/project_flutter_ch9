@@ -2,16 +2,16 @@
 
 A new Flutter project.
 
-## Getting Started
+## Chapter 9: Getting Started
 
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
-1/ search 
-2/ sahredPref
-3/ dropdown
-4/ async - await
+1. **Search**: Implementing search functionality in the app.
+2. **SharedPreferences**: Storing and retrieving data using SharedPreferences.
+3. **Dropdown**: Creating dropdown menus for user selection.
+4. **Async/Await**: Using async/await for asynchronous operations.
 
 
 
