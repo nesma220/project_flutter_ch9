@@ -45,8 +45,6 @@ class _MainScreenState extends State<MainScreen> {
     getCurrentIndex();
   }
 
- 
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -98,11 +96,18 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         systemOverlayStyle: const SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.white,
-          statusBarColor: Colors.white,
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarDividerColor: Colors.white,
+          //bacground for icon back
+          systemNavigationBarColor: Colors.blue,
+
+          //background color
+          statusBarColor: Colors.black,
+
+        //  statusBarBrightness: Brightness.light,
+
+          statusBarIconBrightness: Brightness.light,
+
+          systemNavigationBarDividerColor: Colors.yellow,
+
           //Navigation bar divider color
           systemNavigationBarIconBrightness:
               Brightness.light, //navigation bar icon
@@ -110,7 +115,10 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(
           title,
           style: const TextStyle(
-              fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
         ),
       ),
       body: IndexedStack(

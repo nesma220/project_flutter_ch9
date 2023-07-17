@@ -1,5 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_apprentice_chpter9/network/recipe_model.dart';
+import 'package:flutter_apprentice_chpter9/ui/recipe_card.dart';
+import 'package:flutter_apprentice_chpter9/ui/recipes/recipe_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_dropdown.dart';
 import '../colors.dart';
@@ -25,12 +30,12 @@ class _RecipeListState extends State<RecipeList> {
   bool loading = false;
   bool inErrorState = false;
   List<String> previousSearches = <String>[];
-  // TODO: Add _currentRecipes1
+  APIRecipeQuery? _currentRecipes1;
 
   @override
   void initState() {
     super.initState();
-    // TODO: Call loadRecipes()
+    loadRecipes();
 
     getPreviousSearches();
 
@@ -55,7 +60,12 @@ class _RecipeListState extends State<RecipeList> {
     });
   }
 
-  // TODO: Add loadRecipes
+  Future loadRecipes() async {
+    final jsonString = await rootBundle.loadString('assets/recipes1.json');
+    setState(() {
+      _currentRecipes1 = APIRecipeQuery.fromJson(jsonDecode(jsonString));
+    });
+  }
 
   @override
   void dispose() {
@@ -143,27 +153,19 @@ class _RecipeListState extends State<RecipeList> {
                       searchTextController.text = value;
                       startSearch(searchTextController.text);
                     },
-                    itemBuilder: (BuildContext context) {
+                      itemBuilder: (BuildContext context) {
                       return previousSearches
-                          .map<PopupMenuEntry<String>>((String value) {
-                        return PopupMenuItem<String>(
+                          .map<CustomDropdownMenuItem<String>>((String value) {
+                        return CustomDropdownMenuItem<String>(
+                          text: value,
                           value: value,
-                          child: ListTile(
-                            title: Text(value),
-                            trailing: IconButton(
-                              icon:const Icon(
-                                Icons.close,
-                                color: Colors.grey,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  previousSearches.remove(value);
-                                  savePreviousSearch();
-                                  Navigator.pop(context);
-                                });
-                              },
-                            ),
-                          ),
+                          callback: () {
+                            setState(() {
+                              previousSearches.remove(value);
+                              savePreviousSearch();
+                              Navigator.pop(context);
+                            });
+                          },
                         );
                       }).toList();
                     },
@@ -177,12 +179,16 @@ class _RecipeListState extends State<RecipeList> {
     );
   }
 
+//   الدالة
+//البحث وتحديث الواجهة المستخدمة بناءً على القيمة المدخلة.
   void startSearch(String value) {
     setState(() {
-      currentSearchList.clear();
+      // currentSearchList.clear();
       currentCount = 0;
       currentEndPosition = 0;
       hasMore = true;
+
+      //لإزالة الفراغات الزائدة في بداية
       value = value.trim();
 
       if (!previousSearches.contains(value)) {
@@ -192,16 +198,33 @@ class _RecipeListState extends State<RecipeList> {
     });
   }
 
-  // TODO: Replace method
   Widget _buildRecipeLoader(BuildContext context) {
-    if (searchTextController.text.length < 3) {
+    if (_currentRecipes1 == null || _currentRecipes1?.hits == null) {
       return Container();
     }
-    // Show a loading indicator while waiting for the movies
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Flexible(
+      child: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return Center(
+              child: _buildRecipeCard(context, _currentRecipes1!.hits, 0));
+        },
+      ),
     );
   }
 
-  // TODO: Add _buildRecipeCard
+  Widget _buildRecipeCard(
+      BuildContext topLevelContext, List<APIHits> hits, int index) {
+    final recipe = hits[index].recipe;
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(topLevelContext, MaterialPageRoute(
+          builder: (context) {
+            return const RecipeDetails();
+          },
+        ));
+      },
+      child: recipeStringCard(recipe.image, recipe.label),
+    );
+  }
 }
