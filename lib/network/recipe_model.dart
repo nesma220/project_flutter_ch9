@@ -26,8 +26,6 @@ class APIRecipeQuery {
   });
 }
 
-
-
 @JsonSerializable()
 class APIHits {
   APIRecipe recipe;
@@ -67,8 +65,6 @@ class APIRecipe {
 
   Map<String, dynamic> toJson() => _$APIRecipeToJson(this);
 }
-
-
 
 String getCalories(double? calories) {
   if (calories == null) {
